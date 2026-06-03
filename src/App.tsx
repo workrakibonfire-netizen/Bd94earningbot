@@ -779,7 +779,7 @@ def main():
 
 if __name__ == "__main__":
     main()`,
-    'requirements.txt': `python-telegram-bot==20.8
+    'requirements.txt': `python-telegram-bot==21.1.1
 python-dotenv==1.0.1`,
     '.gitignore': `# SQLite Database files
 database.db
@@ -1295,7 +1295,7 @@ ADMIN_ID=8079009018`}
                     যদি আপনার <code>requirements.txt</code> ফাইলে <code>telegram</code> নামক লাইনটি থাকে, তবে তা রিমুভ করুন। নিশ্চিত করুন যাতে আমাদের দেওয়া <code>requirements.txt</code> ফাইলের মতো হুবহু শুধু নিচের প্যাকেজগুলো থাকে:
                   </p>
                   <pre className="bg-slate-950 border border-slate-850 rounded-xl p-3 font-mono text-[11px] text-cyan-400 shrink-0">
-{`python-telegram-bot==20.8
+{`python-telegram-bot==21.1.1
 python-dotenv==1.0.1`}
                   </pre>
                   <div className="bg-sky-950/25 border border-sky-900/40 p-4 rounded-xl mt-1">
