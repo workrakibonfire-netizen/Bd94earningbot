@@ -1,0 +1,12 @@
+{
+  "name": "BD94 Earning Bot Project Hub",
+  "description": "Premium 24/7 Production Ready Telegram Earning and Referral Bot Hub with SQLite backend and Render compatibility",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
