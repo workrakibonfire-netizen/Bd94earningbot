@@ -5,6 +5,7 @@ import datetime
 import http.server
 import socketserver
 import threading
+import asyncio
 from dotenv import load_dotenv
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
@@ -729,7 +730,7 @@ def main():
     web_thread = threading.Thread(target=run_web_server, daemon=True)
     web_thread.start()
 
-    # Init Telegram Bot application
+    # Building the Application
     app = Application.builder().token(TOKEN).build()
 
     # Register handlers
@@ -750,7 +751,11 @@ def main():
         )
     )
 
-    print("BD94 Telegram Earning Bot is up and running...")
+    print("BD94 Telegram Earning Bot is starting...")
+    
+    # Run the bot and block until signals are received.
+    # This automatically handles the event loop and ensures it is bound correctly
+    # on the MainThread without raising RuntimeError.
     app.run_polling()
 
 if __name__ == "__main__":
