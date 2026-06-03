@@ -10,13 +10,15 @@ import {
   CheckCircle2,
   Cloud,
   Laptop,
-  Award
+  Award,
+  AlertTriangle,
+  Wrench
 } from 'lucide-react';
 
 export default function App() {
   const [selectedFile, setSelectedFile] = useState<string>('bot.py');
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'explorer' | 'withdraw_flow' | 'deploy_guide'>('explorer');
+  const [activeTab, setActiveTab] = useState<'explorer' | 'withdraw_flow' | 'deploy_guide' | 'troubleshoot'>('explorer');
 
   // Exact file contents of the pure Python project
   const files: Record<string, string> = {
@@ -952,6 +954,16 @@ PORT=3000`,
           >
             <BookOpen className="w-3.5 h-3.5" /> Deployment Guides
           </button>
+          <button
+            onClick={() => setActiveTab('troubleshoot')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+              activeTab === 'troubleshoot'
+                ? 'bg-blue-600 font-bold text-white shadow-md'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <AlertTriangle className="w-3.5 h-3.5" /> Fix AttributeError
+          </button>
         </div>
       </header>
 
@@ -1200,6 +1212,101 @@ ADMIN_ID=8079009018`}
                   <div>• <b>Instance Type:</b> Web Service (Free)</div>
                 </div>
                 <p>৪. <b>Environment Variables</b> সেকশনে <code>TELEGRAM_BOT_TOKEN</code> এবং <code>ADMIN_ID</code> অ্যাড করতে ভুলবেন না! Render এ বিল্ড সাকসেস হলেই আপনার বট ২৪/৭ সচল ও লাইভ থাকবে।</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'troubleshoot' && (
+          <div className="flex flex-col gap-6">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col gap-4">
+              <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
+                <div className="bg-amber-600/10 p-2.5 rounded-xl border border-amber-500/20 text-amber-500">
+                  <AlertTriangle className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base text-slate-200 text-left">
+                    AttributeError: 'Updater' object has no attribute error
+                  </h3>
+                  <p className="text-xs text-slate-400 text-left">টেলিগ্রাম বট রান করার সময় এই কমন এররটি কেন হয় এবং কীভাবে সমাধান করবেন তা নিচে দেওয়া হলো।</p>
+                </div>
+              </div>
+
+              {/* Step 1: Why it happens (Bengali & English) */}
+              <div className="flex flex-col gap-3">
+                <h4 className="font-bold text-sm text-amber-400 flex items-center gap-2 text-left">
+                  ❓ কেন এই এররটি আসে? (Root Cause)
+                </h4>
+                <div className="text-xs text-slate-400 leading-relaxed flex flex-col gap-2 bg-slate-950/60 p-4 rounded-xl border border-slate-850 text-left">
+                  <p>
+                    আপনি যখন আপনার পিসিতে বা রেন্ডার (Render) ক্লাউডে <strong><code>telegram</code></strong> নামক আরেকটি আলাদা প্যাকেজ ইনস্টল করেন এবং একই সাথে <strong><code>python-telegram-bot</code></strong> ও ইনস্টল করেন, তখন পাইথনের লাইব্রেরির মধ্যে নাম নিয়ে সংঘর্ষ (Namespace Conflict) তৈরি হয়।
+                  </p>
+                  <p>
+                    পাইপিতে (PyPI) <code>telegram</code> নামক পুরোনো, অকেজো লাইব্রেরি রয়েছে যা আমাদের অফিসিয়াল <code>python-telegram-bot</code> লাইব্রেরির সাথে সাংঘর্ষিক। এটি ইনস্টল করা থাকলে পাইথন ভুল ক্লাস লোড করে যার কারণে <code>'Updater' object has no attribute '_Updater__polling_cleanup_cb'</code> বা <code>'Updater' object has no attribute 'updater'</code> এরর আসে।
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 2: How to fix locally */}
+              <div className="flex flex-col gap-3 mt-2">
+                <h4 className="font-bold text-sm text-emerald-400 flex items-center gap-1.5 text-left">
+                  <Wrench className="w-4 h-4" /> পিসিতে সমাধান করার নিয়ম (Local Solution)
+                </h4>
+                <div className="text-xs text-slate-400 leading-relaxed flex flex-col gap-3 text-left">
+                  <p className="text-slate-400">আপনার পিসির টার্মিনাল বা কমান্ড প্রম্পটে গিয়ে নিচের ধাপগুলো অনুসরণ করুন:</p>
+                  
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between bg-slate-950 border border-slate-850 rounded-xl p-3">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-[10px] text-slate-500 font-mono">ধাপ ১: কনফ্লিক্টিং লাইব্রেরিগুলো আনইনস্টল করুন</span>
+                        <code className="text-[11px] text-amber-400 font-mono">pip uninstall telegram python-telegram-bot</code>
+                      </div>
+                      <button
+                        onClick={() => handleCopy('uninstall', 'pip uninstall telegram python-telegram-bot')}
+                        className="bg-slate-900 border border-slate-800 hover:bg-slate-850 p-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition"
+                      >
+                        {copiedFile === 'uninstall' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between bg-slate-950 border border-slate-850 rounded-xl p-3">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-[10px] text-slate-500 font-mono">ধাপ ২: শুধুমাত্র সঠিক লাইব্রেরিটি পুনরায় ইনস্টল করুন</span>
+                        <code className="text-[11px] text-emerald-400 font-mono">pip install python-telegram-bot</code>
+                      </div>
+                      <button
+                        onClick={() => handleCopy('install', 'pip install python-telegram-bot')}
+                        className="bg-slate-900 border border-slate-800 hover:bg-slate-850 p-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition"
+                      >
+                        {copiedFile === 'install' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3: How to fix on Render deploy */}
+              <div className="flex flex-col gap-3 mt-2 text-left">
+                <h4 className="font-bold text-sm text-sky-450 flex items-center gap-1.5 text-slate-200">
+                  <Cloud className="w-4 h-4 text-sky-400" /> রেন্ডার (Render) ক্লাউডে সমাধান করার নিয়ম (Cloud Solution)
+                </h4>
+                <div className="text-xs text-slate-400 leading-relaxed flex flex-col gap-2">
+                  <p>
+                    যদি আপনার <code>requirements.txt</code> ফাইলে <code>telegram</code> নামক লাইনটি থাকে, তবে তা রিমুভ করুন। নিশ্চিত করুন যাতে আমাদের দেওয়া <code>requirements.txt</code> ফাইলের মতো হুবহু শুধু নিচের প্যাকেজগুলো থাকে:
+                  </p>
+                  <pre className="bg-slate-950 border border-slate-850 rounded-xl p-3 font-mono text-[11px] text-cyan-400 shrink-0">
+{`python-telegram-bot==20.8
+python-dotenv==1.0.1`}
+                  </pre>
+                  <div className="bg-sky-950/25 border border-sky-900/40 p-4 rounded-xl mt-1">
+                    <p className="font-bold text-sky-300 flex items-center gap-1.5 mb-1 text-slate-200">
+                      ⚠️ রেন্ডারে ক্যাশ ক্লিয়ার করে পুনরায় ডেপ্লয় করুন (Crucial Step):
+                    </p>
+                    <p className="text-slate-400 leading-relaxed">
+                      রেন্ডার সার্ভার পুরানো ইনস্টল করা ক্যাশড লাইব্রেরিগুলি ধরে রাখতে পারে। তাই রেন্ডার ড্যাশবোর্ডে গিয়ে আপনার ওয়েব সার্ভিসের <strong>Manual Deploy</strong> ড্রপডাউনে ক্লিক করুন এবং <strong>Clear build cache & deploy</strong> সিলেক্ট করুন। এটি সম্পূর্ণ ফ্রেশ বিল্ড তৈরি করবে এবং আপনার কনফ্লিক্ট এরর চিরতরে সমাধান হয়ে যাবে!
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
