@@ -730,6 +730,13 @@ def main():
     web_thread = threading.Thread(target=run_web_server, daemon=True)
     web_thread.start()
 
+    # Ensure there is a valid event loop initialized in the MainThread
+    # before building the Application to prevent "RuntimeError: There is no current event loop"
+    try:
+        asyncio.get_event_loop()
+    except RuntimeError:
+        asyncio.set_event_loop(asyncio.new_event_loop())
+
     # Building the Application
     app = Application.builder().token(TOKEN).build()
 
