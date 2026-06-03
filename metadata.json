@@ -1,6 +1,0 @@
-{
-  "name": "Telegram Bot Python Assistant",
-  "description": "An interactive workspace to structure, optimize, and simulate Python Telegram Bot code with explanatory guides.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

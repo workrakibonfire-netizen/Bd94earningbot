@@ -1,8 +1,21 @@
-node_modules/
-build/
-dist/
-coverage/
+# SQLite Database files
+database.db
+database.db-journal
+
+# Environment secrets
+.env
+
+# Python caching & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv
+venv/
+env/
+ENV/
+
+# OS specific files
 .DS_Store
-*.log
-.env*
-!.env.example
+Thumbs.db
